@@ -1,0 +1,14 @@
+@import "globals.scss";
+
+body.ambianceCreator {
+	height: 100vh;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+
+	font-family: $font-family;
+	font-size: $font-size;
+	color: $font-color;
+
+	background-color: $background-color;
+}
