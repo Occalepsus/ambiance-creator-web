@@ -2,10 +2,16 @@
 
 import styles from "./components.module.scss";
 
-import { useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 
 import PanelView from "./PanelView";
 import Viewport from "./Viewport";
+
+export interface ACGlobalState {
+	fullscreenState: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
+}
+
+export const ACGlobalStateContext = createContext<ACGlobalState | null>(null);
 
 export default function MainLayout({
 	ambianceBrowser,
@@ -13,38 +19,19 @@ export default function MainLayout({
 	ambianceBrowser: React.ReactNode;
 }) {
 	const [isFullscreen, setIsFullscreen] = useState(true);
-	// const [viewport, _] = useState<React.ReactNode>(
-	// 	<Viewport
-	// 		isFullscreen={isFullscreen}
-	// 		setIsFullscreen={setIsFullscreen}
-	// 	/>
-	// );
-
-	useEffect(() => {
-		console.log(isFullscreen);
-	}, [isFullscreen]);
 
 	// TODO: fix
 	return (
 		<main className={styles.mainLayout}>
-			{isFullscreen ? (
-				<div className={styles.fullscreen}>
-					<Viewport
-						isFullscreen={isFullscreen}
-						setIsFullscreen={setIsFullscreen}
-					/>
-				</div>
-			) : (
-				<PanelView
-					main={
-						<Viewport
-							isFullscreen={isFullscreen}
-							setIsFullscreen={setIsFullscreen}
-						/>
-					}
-					side={ambianceBrowser}
-				/>
-			)}
+			<ACGlobalStateContext.Provider
+				value={{ fullscreenState: [isFullscreen, setIsFullscreen] }}
+			>
+				{isFullscreen ? (
+					<Viewport />
+				) : (
+					<PanelView main={<Viewport />} side={ambianceBrowser} />
+				)}
+			</ACGlobalStateContext.Provider>
 		</main>
 	);
 }

@@ -4,7 +4,7 @@ import styles from "./components.module.scss";
 
 import { useContext } from "react";
 
-import { Ambiance } from "@/ambianceManager";
+import { Ambiance, setCurrentAmbiance } from "@/ambianceManager";
 import { SocketContext } from "./ClientSocket";
 
 export default function AmbianceEntry({
@@ -25,9 +25,10 @@ export default function AmbianceEntry({
 				className={styles.thumbnail}
 			/>
 			<button
-				onClick={(e) =>
-					socket.emit("set-displayed-ambiance", { ambiance })
-				}
+				onClick={(e) => {
+					setCurrentAmbiance(ambiance);
+					socket.emit("set-displayed-ambiance", { ambiance });
+				}}
 			>
 				{"|>"}
 			</button>

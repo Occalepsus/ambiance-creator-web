@@ -24,6 +24,10 @@ app.prepare().then(() => {
 		socket.on("set-displayed-ambiance", (data) => {
 			io.emit("ambiance-change", data);
 		});
+
+		socket.on("ambiances-upload", (data) => {
+			io.emit("ambiances-add", data);
+		});
 	});
 
 	httpServer

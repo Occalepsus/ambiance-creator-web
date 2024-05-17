@@ -24,13 +24,6 @@ main.mainLayout {
 
 	margin: 0;
 	//padding: 5px;
-
-	.fullscreen {
-		width: 100%;
-		height: 100%;
-
-		background-color: black;
-	}
 }
 
 .panel {
@@ -97,11 +90,18 @@ main.mainLayout {
 	width: 100%;
 	height: 100%;
 
-	// TODO : wtf
 	.viewportImage {
 		width: 100%;
+		// TODO : wtf
 		height: 99.5%;
 		object-fit: contain;
+	}
+
+	.fullscreen {
+		width: 100%;
+		height: 100%;
+
+		background-color: black;
 	}
 }
 
