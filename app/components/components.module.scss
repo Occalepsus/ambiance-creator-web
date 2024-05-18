@@ -115,18 +115,15 @@ main.mainLayout {
 	width: 100%;
 	height: 100%;
 
+	&.fullscreen {
+		background-color: black;
+	}
+
 	.viewportImage {
 		width: 100%;
 		// TODO : wtf
 		height: 99.5%;
 		object-fit: contain;
-	}
-
-	.fullscreen {
-		width: 100%;
-		height: 100%;
-
-		background-color: black;
 	}
 }
 
