@@ -8,7 +8,7 @@ import PanelView from "./PanelView";
 import Viewport from "./Viewport";
 
 export interface ACGlobalState {
-	fullscreenState: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
+	fullscreenState: [boolean, (state: boolean) => void];
 }
 
 export const ACGlobalStateContext = createContext<ACGlobalState | null>(null);
