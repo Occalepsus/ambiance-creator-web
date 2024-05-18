@@ -125,6 +125,34 @@ main.mainLayout {
 		height: 99.5%;
 		object-fit: contain;
 	}
+
+	.fullscreenButton {
+		position: absolute;
+		bottom: 0.5em;
+		right: 0.5em;
+		width: 3em;
+		height: 3em;
+		border: none;
+		border-radius: 50%;
+
+		background-color: $fullscreen-button-color;
+		opacity: 0;
+
+		cursor: pointer;
+
+		transition: opacity 0.3s;
+
+		&::before {
+			content: "⬜";
+			display: block;
+			text-align: center;
+			line-height: 3em; // Ajustez ceci pour centrer verticalement le contenu dans le bouton
+		}
+
+		&:hover {
+			opacity: 1;
+		}
+	}
 }
 
 .debugFrame {

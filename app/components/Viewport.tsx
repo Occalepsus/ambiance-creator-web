@@ -52,12 +52,11 @@ export default function Viewport({ className = "" }: { className?: string }) {
 				<></>
 			)}
 			<button
+				className={styles.fullscreenButton}
 				onClick={() => {
 					fullscreenState[1](!fullscreenState[0]);
 				}}
-			>
-				Show ambiance browser
-			</button>
+			/>
 		</div>
 	);
 }
