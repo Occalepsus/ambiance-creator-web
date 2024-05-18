@@ -18,7 +18,8 @@ export default function MainLayout({
 }: {
 	ambianceBrowser: React.ReactNode;
 }) {
-	const [isFullscreen, setIsFullscreen] = useState(true);
+	// TODO : false only for development, should be true by default
+	const [isFullscreen, setIsFullscreen] = useState(false);
 
 	// TODO: fix
 	return (

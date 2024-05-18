@@ -14,6 +14,7 @@ export default function AmbianceBrowser({
 	className?: string;
 }) {
 	const [ambianceList, setAmbianceList] = useState<Ambiance[]>([]);
+	const [selectedEntry, setSelectedEntry] = useState<Ambiance | null>(null);
 
 	const socket = useContext(SocketContext);
 
@@ -42,17 +43,31 @@ export default function AmbianceBrowser({
 		};
 	}, []);
 
+	// onClick is only called when the click is not on an ambianceEntry element, if it is called, unselect the selected entry
+	function onClick(event: React.MouseEvent<HTMLElement, MouseEvent>) {
+		setSelectedEntry(null);
+	}
+
 	return (
 		<>
 			<FileUploader />
-			<div className={[styles.ambianceBrowser, className].join(" ")}>
+			<div
+				className={[styles.ambianceBrowser, className].join(" ")}
+				onClick={onClick}
+			>
 				{ambianceList.length === 0 ? (
 					<p>No ambiance found</p>
 				) : (
-					<ul>
+					<ul className={styles.browserLayout}>
 						{ambianceList.map((ambiance, index) => (
 							<li key={index}>
-								<AmbianceEntry ambiance={ambiance} />
+								<AmbianceEntry
+									ambiance={ambiance}
+									selectedEntryState={[
+										selectedEntry,
+										setSelectedEntry,
+									]}
+								/>
 							</li>
 						))}
 					</ul>

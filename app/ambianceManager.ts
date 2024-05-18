@@ -57,7 +57,7 @@ export async function uploadAmbiances(data: FormData) {
 async function generateMockAmbianceList() {
 	return [
 		await createAmbianceFromName("tftf-2.jpg"),
-		await createAmbianceFromName("tftf-10.jpg"),
+		await createAmbianceFromName("tftl-18.jpg"),
 		await createAmbianceFromName("tftf-19.jpg"),
 	];
 }
