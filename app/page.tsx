@@ -1,7 +1,5 @@
 import styles from "./page.module.scss";
 
-import "./test.scss";
-
 import ClientSocket from "./components/ClientSocket";
 import Viewport from "./components/Viewport";
 import AmbianceBrowser from "./components/AmbianceBrowser";
