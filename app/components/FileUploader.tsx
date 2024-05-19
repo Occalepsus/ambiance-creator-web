@@ -54,15 +54,18 @@ export default function FileUploader({
 			onDrop={handleFileDrop}
 			onDragOver={(e) => e.preventDefault()}
 		>
-			<input
-				className={styles.fileUploaderButton}
-				type="file"
-				accept="image/jpeg, image/png, image/gif"
-				name="file"
-				multiple
-				onChange={handleFileUpload}
-			/>
 			{children}
+			<label htmlFor="fileUpload" className={styles.fileUploaderButton}>
+				Upload new files
+				<input
+					id="fileUpload"
+					type="file"
+					accept="image/jpeg, image/png, image/gif"
+					name="file"
+					multiple
+					onChange={handleFileUpload}
+				/>
+			</label>
 		</div>
 	);
 }

@@ -48,7 +48,7 @@ export default function AmbianceBrowser({
 		setSelectedEntry(null);
 	}
 
-	// TODO : ambiance list is not initialized correctly when the fullscreen state changes
+	// TODO : sort the list by name
 	return (
 		<div className={[styles.ambianceBrowser, className].join(" ")}>
 			<FileUploader>

@@ -70,6 +70,26 @@ main.mainLayout {
 
 	.fileUploader {
 		.fileUploaderButton {
+			display: inline-block;
+			width: 100%;
+			padding: 6px 12px;
+			margin-bottom: 5px;
+			box-sizing: border-box;
+			text-align: center;
+
+			border: 1px solid $file-uploader-border-color;
+			border-radius: 0.25em;
+			background-color: $file-uploader-background-color;
+
+			cursor: pointer;
+
+			&:hover {
+				background-color: $file-uploader-hover-background-color;
+			}
+
+			input[type="file"] {
+				display: none;
+			}
 			// TODO : make input styling
 		}
 	}
