@@ -1,9 +1,9 @@
 "use server";
 
-import { writeFile } from "fs/promises";
+import { readdir, writeFile } from "fs/promises";
 import path from "path";
 
-let ambianceList: Array<Ambiance>;
+let ambianceList: Array<Ambiance> = [];
 let currentAmbiance: Ambiance | null = null;
 
 export interface Ambiance {
@@ -66,6 +66,25 @@ export async function uploadAmbiances(data: FormData) {
 
 // TODO: add a function to remove ambiance
 
+async function getAmbianceListFromPublicFolder() {
+	// Read the ambiances directory and create an Ambiance object for each file
+	const ambiancesDir = path.join(".", "public", "ambiances");
+	try {
+		const files = await readdir(ambiancesDir);
+		const ambiances = await Promise.all(
+			files.map(async (file) => {
+				// Assurez-vous que createAmbianceFromName est une fonction asynchrone qui retourne une promesse
+				return createAmbianceFromName(file);
+			})
+		);
+		console.log("Ambiances initialized:", ambiances);
+
+		return ambiances;
+	} catch (error) {
+		console.error("Error initializing ambiance list:", error);
+	}
+}
+
 async function generateMockAmbianceList() {
 	return [
 		await createAmbianceFromName("tftf-2.jpg"),
@@ -74,6 +93,10 @@ async function generateMockAmbianceList() {
 	];
 }
 
-generateMockAmbianceList().then((list) => {
-	ambianceList = list;
+getAmbianceListFromPublicFolder().then((ambiances) => {
+	if (ambiances) {
+		ambianceList = ambiances;
+	} else {
+		console.log("No ambiances found in public folder, it can be an error.");
+	}
 });
