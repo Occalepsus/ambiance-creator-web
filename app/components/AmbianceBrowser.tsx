@@ -3,7 +3,7 @@
 import styles from "./components.module.scss";
 
 import AmbianceEntry from "./AmbianceEntry";
-import { Ambiance, getAmbianceList } from "@/ambianceManager";
+import { Ambiance, getAmbianceList, uploadAmbiances } from "@/ambianceManager";
 import { useContext, useEffect, useState } from "react";
 import { SocketContext } from "./ClientSocket";
 import FileUploader from "./FileUploader";
@@ -48,31 +48,24 @@ export default function AmbianceBrowser({
 		setSelectedEntry(null);
 	}
 
+	// TODO : ambiance list is not initialized correctly when the fullscreen state changes
 	return (
-		<>
-			<FileUploader />
-			<div
-				className={[styles.ambianceBrowser, className].join(" ")}
-				onClick={onClick}
-			>
-				{ambianceList.length === 0 ? (
-					<p>No ambiance found</p>
-				) : (
-					<ul className={styles.browserLayout}>
-						{ambianceList.map((ambiance, index) => (
-							<li key={index}>
-								<AmbianceEntry
-									ambiance={ambiance}
-									selectedEntryState={[
-										selectedEntry,
-										setSelectedEntry,
-									]}
-								/>
-							</li>
-						))}
-					</ul>
-				)}
-			</div>
-		</>
+		<div className={[styles.ambianceBrowser, className].join(" ")}>
+			<FileUploader>
+				<ul className={styles.ambianceBrowserLayout} onClick={onClick}>
+					{ambianceList.map((ambiance, index) => (
+						<li key={index}>
+							<AmbianceEntry
+								ambiance={ambiance}
+								selectedEntryState={[
+									selectedEntry,
+									setSelectedEntry,
+								]}
+							/>
+						</li>
+					))}
+				</ul>
+			</FileUploader>
+		</div>
 	);
 }

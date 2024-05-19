@@ -31,28 +31,40 @@ export async function getAmbianceList() {
 }
 
 export async function uploadAmbiances(data: FormData) {
-	const file = data.get("file") as File | undefined;
-	if (!file || (file.name === "undefined" && file.size === 0)) {
+	// Get fileList from formData, and return early if it is null
+	const fileList = data.getAll("file") as Array<File | undefined> | undefined;
+	if (!fileList) {
 		return [];
 	}
 
-	const bytes = await file.arrayBuffer();
-	const buffer = Buffer.from(bytes);
+	// For each file, if it is valid, upload it to the server
+	// and create an Ambiance object to add it to the new ambiances list
+	const newAmbiances: Array<Ambiance> = [];
+	fileList.forEach((file) => {
+		if (!file || (file.name === "undefined" && file.size === 0)) {
+			return;
+		}
 
-	const filePath = path.join(".", "public", "ambiances", file.name);
-	await writeFile(filePath, buffer);
-	console.log(`open ${filePath} to see the uploaded file`);
+		file.arrayBuffer().then((bytes) => {
+			const buffer = Buffer.from(bytes);
 
-	const newAmbiance = await createAmbianceFromName(file.name);
+			const filePath = path.join(".", "public", "ambiances", file.name);
+			writeFile(filePath, buffer).then(() => {
+				console.log(`${filePath} successfully uploaded to the server.`);
+			});
 
-	ambianceList.push(newAmbiance);
+			createAmbianceFromName(file.name).then((newAmbiance) =>
+				newAmbiances.push(newAmbiance)
+			);
+		});
+	});
 
-	return [newAmbiance];
+	// Add the new ambiances to the list, and return them
+	ambianceList.concat(newAmbiances);
+	return newAmbiances;
 }
 
 // TODO: add a function to remove ambiance
-
-// TODO : vérifier si j'ai vraiment besoin de socket io pour ça, car je peux juste fetch la liste des ambiances dans un composant server
 
 async function generateMockAmbianceList() {
 	return [
