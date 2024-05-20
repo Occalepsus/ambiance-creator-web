@@ -30,6 +30,15 @@ export async function getAmbianceList() {
 	return ambianceList;
 }
 
+function sortAmbianceList() {
+	ambianceList.sort((a, b) =>
+		a.name.localeCompare(b.name, undefined, {
+			numeric: true,
+			sensitivity: "base",
+		})
+	);
+}
+
 export async function uploadAmbiances(data: FormData) {
 	// Get fileList from formData, and return early if it is null
 	const fileList = data.getAll("file") as Array<File | undefined> | undefined;
@@ -75,6 +84,7 @@ export async function uploadAmbiances(data: FormData) {
 
 	// Add the new ambiances to the list, and return them
 	ambianceList.concat(newAmbiances);
+	sortAmbianceList();
 	return newAmbiances;
 }
 
@@ -110,6 +120,7 @@ async function generateMockAmbianceList() {
 getAmbianceListFromPublicFolder().then((ambiances) => {
 	if (ambiances) {
 		ambianceList = ambiances;
+		sortAmbianceList();
 	} else {
 		console.log("No ambiances found in public folder, it can be an error.");
 	}
