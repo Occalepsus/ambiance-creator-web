@@ -41,7 +41,21 @@ export async function uploadAmbiances(data: FormData) {
 	// and create an Ambiance object to add it to the new ambiances list
 	const newAmbiances: Array<Ambiance> = [];
 	fileList.forEach((file) => {
+		// First check for sanity: file should not be null, undefined, or empty
 		if (!file || (file.name === "undefined" && file.size === 0)) {
+			console.error("Invalid file:", file);
+			return;
+		}
+
+		// File should be an image
+		if (!file.name.match(/\.(jpg|jpeg|png)$/)) {
+			console.error("Invalid file type:", file.name);
+			return;
+		}
+
+		// File should not already exist in the ambiance list
+		if (ambianceList.find((ambiance) => ambiance.name === file.name)) {
+			console.error("Ambiance already exists:", file.name);
 			return;
 		}
 

@@ -2,11 +2,11 @@
 
 import styles from "./components.module.scss";
 
-import AmbianceEntry from "./AmbianceEntry";
 import { Ambiance, getAmbianceList, uploadAmbiances } from "@/ambianceManager";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { SocketContext } from "./ClientSocket";
 import FileUploader from "./FileUploader";
+import AmbianceEntry from "./AmbianceEntry";
 
 export default function AmbianceBrowser({
 	className = "",
@@ -14,6 +14,7 @@ export default function AmbianceBrowser({
 	className?: string;
 }) {
 	const [ambianceList, setAmbianceList] = useState<Ambiance[]>([]);
+	const itemsRef = useRef<Map<Ambiance, HTMLLIElement>>(null);
 	const [selectedEntry, setSelectedEntry] = useState<Ambiance | null>(null);
 
 	const socket = useContext(SocketContext);
@@ -34,8 +35,17 @@ export default function AmbianceBrowser({
 		}: {
 			newAmbiances: Ambiance[];
 		}) {
-			setAmbianceList((currentList) => [...currentList, ...newAmbiances]);
+			setAmbianceList((currentList) =>
+				[...currentList, ...newAmbiances].sort((a, b) =>
+					a.name.localeCompare(b.name, undefined, {
+						numeric: true,
+						sensitivity: "base",
+					})
+				)
+			);
+			setSelectedEntry(newAmbiances[0]);
 		}
+
 		socket.on("ambiances-add", onAmbiancesAdd);
 
 		return () => {
@@ -43,18 +53,42 @@ export default function AmbianceBrowser({
 		};
 	}, []);
 
+	useEffect(() => {
+		if (selectedEntry) {
+			getMap()
+				.get(selectedEntry)
+				?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+		}
+	}, [selectedEntry]);
+
 	// onClick is only called when the click is not on an ambianceEntry element, if it is called, unselect the selected entry
 	function onClick(event: React.MouseEvent<HTMLElement, MouseEvent>) {
 		setSelectedEntry(null);
 	}
 
-	// TODO : sort the list by name
+	function getMap() {
+		if (!itemsRef.current) {
+			itemsRef.current = new Map();
+		}
+		return itemsRef.current;
+	}
+
 	return (
 		<div className={[styles.ambianceBrowser, className].join(" ")}>
 			<FileUploader>
-				<ul className={styles.ambianceBrowserLayout} onClick={onClick}>
+				<ol className={styles.ambianceBrowserLayout} onClick={onClick}>
 					{ambianceList.map((ambiance, index) => (
-						<li key={index}>
+						<li
+							key={index}
+							ref={(node) => {
+								const map = getMap();
+								if (node) {
+									map.set(ambiance, node);
+								} else {
+									map.delete(ambiance);
+								}
+							}}
+						>
 							<AmbianceEntry
 								ambiance={ambiance}
 								selectedEntryState={[
@@ -64,7 +98,7 @@ export default function AmbianceBrowser({
 							/>
 						</li>
 					))}
-				</ul>
+				</ol>
 			</FileUploader>
 		</div>
 	);
