@@ -12,10 +12,17 @@ export interface Ambiance {
 	src: string;
 }
 
-function createAmbianceFromName(name: string) {
+function getLocalAmbianceFromName(name: string) {
 	return {
 		name: name,
 		src: `/ambiances/${name}`,
+	};
+}
+
+function getAmbianceFromSource(src: string) {
+	return {
+		name: path.basename(src),
+		src: src,
 	};
 }
 
@@ -31,13 +38,27 @@ export async function getAmbianceList() {
 	return ambianceList;
 }
 
-function sortAmbianceList() {
+async function onAmbianceListModified() {
+	// Sort list
 	ambianceList.sort((a, b) =>
 		a.name.localeCompare(b.name, undefined, {
 			numeric: true,
 			sensitivity: "base",
 		})
 	);
+
+	// Save list to file
+	const dataFilePath = path.join(".", "data", "ambianceList.json");
+	const data = JSON.stringify(ambianceList, null, 2);
+
+	// Check if file exists
+	if (!fs.existsSync(dataFilePath)) {
+		// If file doesn't exist, create it
+		fs.writeFileSync(dataFilePath, "", { flag: "wx" });
+	}
+
+	// Write to file
+	fs.writeFileSync(dataFilePath, data);
 }
 
 export async function uploadAmbiances(data: FormData) {
@@ -85,55 +106,28 @@ export async function uploadAmbiances(data: FormData) {
 		});
 
 		// At last, add the new ambiance to the list
-		newAmbiances.push(createAmbianceFromName(file.name));
+		newAmbiances.push(getLocalAmbianceFromName(file.name));
 	});
 
 	// Add the new ambiances to the list, and return them
 	ambianceList = [...ambianceList, ...newAmbiances];
-	sortAmbianceList();
+	onAmbianceListModified();
 	console.log("Ambiances uploaded:", ambianceList);
 	return newAmbiances;
 }
 
 // TODO: add a function to remove ambiance
 
-async function getAmbianceListFromPublicFolder() {
-	// Read the ambiances directory and create an Ambiance object for each file
-	const ambiancesDir = path.join(".", "public", "ambiances");
-	if (fs.existsSync(ambiancesDir)) {
-		try {
-			const files = await readdir(ambiancesDir);
-			const ambiances = await Promise.all(
-				files.map(async (file) => {
-					// Assurez-vous que createAmbianceFromName est une fonction asynchrone qui retourne une promesse
-					return createAmbianceFromName(file);
-				})
-			);
-			console.log("Ambiances initialized:", ambiances);
-
-			return ambiances;
-		} catch (error) {
-			console.error("Error initializing ambiance list:", error);
-		}
+function loadAmbianceList(): Array<Ambiance> | null {
+	const dataFilePath = path.join(".", "data", "ambianceList.json");
+	if (fs.existsSync(dataFilePath)) {
+		const data = fs.readFileSync(dataFilePath, "utf8");
+		return JSON.parse(data);
 	} else {
-		console.warn("Ambiances directory not found. Can be an error.");
+		console.warn("Ambiance list data file not found. Can be an error.");
 		return null;
 	}
 }
 
-function generateMockAmbianceList() {
-	return [
-		createAmbianceFromName("tftf-2.jpg"),
-		createAmbianceFromName("tftl-18.jpg"),
-		createAmbianceFromName("tftf-19.jpg"),
-	];
-}
-
-getAmbianceListFromPublicFolder().then((ambiances) => {
-	if (ambiances) {
-		ambianceList = ambiances;
-		sortAmbianceList();
-	} else {
-		console.log("No ambiances found in public folder, it can be an error.");
-	}
-});
+ambianceList = loadAmbianceList() || [];
+console.log("Ambiance list loaded:", ambianceList);

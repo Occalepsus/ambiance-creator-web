@@ -2,7 +2,7 @@
 
 import styles from "./components.module.scss";
 
-import { Ambiance, getAmbianceList, uploadAmbiances } from "@/ambianceManager";
+import { Ambiance, getAmbianceList } from "@/ambianceManager";
 import { useContext, useEffect, useRef, useState } from "react";
 import { SocketContext } from "./ClientSocket";
 import FileUploader from "./FileUploader";
