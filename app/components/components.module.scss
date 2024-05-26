@@ -147,9 +147,9 @@ main.mainLayout {
 	}
 
 	.viewportImage {
+		display: block;
 		width: 100%;
-		// TODO : wtf
-		height: 99.5%;
+		height: 100%;
 		object-fit: contain;
 	}
 
