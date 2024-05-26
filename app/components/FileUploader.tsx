@@ -2,7 +2,7 @@
 
 import styles from "./components.module.scss";
 
-import { uploadAmbiances } from "@/ambianceManager";
+import { addAmbianceFromURL, uploadAmbiances } from "@/ambianceManager";
 import { useContext } from "react";
 import { SocketContext } from "./ClientSocket";
 
@@ -43,6 +43,24 @@ export default function FileUploader({
 		});
 	}
 
+	function handleFromURLSubmit(event: React.FormEvent<HTMLFormElement>) {
+		event.preventDefault();
+
+		// Get the URL from the input
+		const URLValue = (event.currentTarget.elements[0] as HTMLInputElement)
+			.value;
+
+		// Check URL sanity
+		if (!URLValue) {
+			console.error("URL is empty.");
+		} else {
+			// Add ambiance from URL
+			addAmbianceFromURL(URLValue).then((newAmbiances) => {
+				socket.emit("ambiances-upload", { newAmbiances });
+			});
+		}
+	}
+
 	// TODO : implement drag and drop user visual feedback
 	return (
 		<div
@@ -55,17 +73,33 @@ export default function FileUploader({
 			onDragOver={(e) => e.preventDefault()}
 		>
 			{children}
-			<label htmlFor="fileUpload" className={styles.fileUploaderButton}>
-				Upload new files
-				<input
-					id="fileUpload"
-					type="file"
-					accept="image/jpeg, image/png, image/gif"
-					name="file"
-					multiple
-					onChange={handleFileUpload}
-				/>
-			</label>
+			<div className={styles.fileUploaderBox}>
+				<label
+					htmlFor="fileUpload"
+					className={styles.fileUploaderButton}
+				>
+					Upload new files
+					<input
+						id="fileUpload"
+						type="file"
+						accept="image/jpeg, image/png, image/gif"
+						name="file"
+						multiple
+						onChange={handleFileUpload}
+					/>
+				</label>
+				<form className={styles.fromURL} onSubmit={handleFromURLSubmit}>
+					<input
+						type="text"
+						name="fromURLInput"
+						className={styles.fromURLInput}
+						placeholder="Paste image URL here"
+					/>
+					<button className={styles.fromURLButton} type="submit">
+						From URL
+					</button>
+				</form>
+			</div>
 		</div>
 	);
 }

@@ -69,28 +69,49 @@ main.mainLayout {
 	overflow-y: scroll;
 
 	.fileUploader {
-		.fileUploaderButton {
-			display: inline-block;
-			width: 100%;
-			padding: 6px 12px;
+		.fileUploaderBox {
 			margin-bottom: 5px;
-			box-sizing: border-box;
-			text-align: center;
 
-			border: 1px solid $file-uploader-border-color;
-			border-radius: 0.25em;
-			background-color: $file-uploader-background-color;
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 8px;
 
-			cursor: pointer;
+			.fileUploaderButton {
+				display: inline-block;
+				width: 100%;
+				padding: 6px 12px;
+				box-sizing: border-box;
+				text-align: center;
 
-			&:hover {
-				background-color: $file-uploader-hover-background-color;
+				border: 1px solid $file-uploader-border-color;
+				border-radius: 0.25em;
+				background-color: $file-uploader-background-color;
+
+				cursor: pointer;
+
+				&:hover {
+					background-color: $file-uploader-hover-background-color;
+				}
+
+				input[type="file"] {
+					display: none;
+				}
+				// TODO : make input styling
 			}
 
-			input[type="file"] {
-				display: none;
+			.fromURL {
+				display: grid;
+				grid-template-columns: 1fr auto;
+
+				input[type="text"] {
+					width: 100%;
+					padding: 6px 12px;
+					box-sizing: border-box;
+					border: 1px solid $file-uploader-border-color;
+					border-radius: 0.25em;
+					background-color: $file-uploader-background-color;
+				}
 			}
-			// TODO : make input styling
 		}
 	}
 

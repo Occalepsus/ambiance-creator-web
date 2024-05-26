@@ -11,4 +11,10 @@ body.ambianceCreator {
 	color: $font-color;
 
 	background-color: $background-color;
+
+	input {
+		font-family: inherit;
+		font-size: inherit;
+		color: inherit;
+	}
 }

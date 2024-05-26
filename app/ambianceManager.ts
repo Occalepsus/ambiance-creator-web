@@ -116,6 +116,35 @@ export async function uploadAmbiances(data: FormData) {
 	return newAmbiances;
 }
 
+export async function addAmbianceFromURL(url: string) {
+	// Check for sanity: URL should not be empty
+	if (!url) {
+		console.error("Invalid URL:", url);
+		return [];
+	}
+
+	const res = await fetch(url);
+	const buff = await res.blob();
+
+	if (!buff.type.startsWith("image/")) {
+		console.error("Invalid file type:", buff.type);
+		return [];
+	}
+
+	// Check if the ambiance already exists
+	if (ambianceList.find((ambiance) => ambiance.src === url)) {
+		console.error("Ambiance already exists:", url);
+		return [];
+	}
+
+	// Add the new ambiance to the list
+	const newAmbiance = getAmbianceFromSource(url);
+	ambianceList.push(newAmbiance);
+	onAmbianceListModified();
+	console.log("Ambiance added:", newAmbiance);
+	return [newAmbiance];
+}
+
 // TODO: add a function to remove ambiance
 
 function loadAmbianceList(): Array<Ambiance> | null {

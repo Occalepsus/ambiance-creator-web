@@ -22,6 +22,7 @@ app.prepare().then(() => {
 		});
 
 		socket.on("set-displayed-ambiance", (data) => {
+			// TODO: Check data validity!
 			io.emit("ambiance-change", data);
 		});
 
