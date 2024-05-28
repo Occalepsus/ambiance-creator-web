@@ -43,12 +43,14 @@ export default function AmbianceEntry({
 			].join(" ")}
 			onClick={onEntryClick}
 		>
-			<img
-				src={ambiance.src}
-				alt="thumbnail"
-				className={styles.thumbnail}
-			/>
-			<span>{ambiance.name}</span>
+			<div className={styles.thumbnailContainer}>
+				<img
+					src={ambiance.src}
+					alt="thumbnail"
+					className={styles.thumbnail}
+				/>
+			</div>
+			<span className={styles.ambianceEntryName}>{ambiance.name}</span>
 		</div>
 	);
 }
