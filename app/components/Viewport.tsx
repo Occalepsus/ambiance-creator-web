@@ -48,13 +48,13 @@ export default function Viewport({ className = "" }: { className?: string }) {
 					{currentAmbiance.type === "image" && (
 						<img
 							src={currentAmbiance ? currentAmbiance.src : ""}
-							className={styles.viewportImage}
+							className={styles.viewportContent}
 						/>
 					)}
 					{currentAmbiance.type === "video" && (
 						<video
 							src={currentAmbiance ? currentAmbiance.src : ""}
-							className={styles.viewportVideo}
+							className={styles.viewportContent}
 							loop
 							muted
 							autoPlay

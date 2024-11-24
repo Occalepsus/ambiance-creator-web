@@ -183,7 +183,7 @@ main.mainLayout {
 		background-color: black;
 	}
 
-	.viewportImage {
+	.viewportContent {
 		display: block;
 		width: 100%;
 		height: 100%;
@@ -210,7 +210,7 @@ main.mainLayout {
 			content: "⬜";
 			display: block;
 			text-align: center;
-			line-height: 3em; // Ajustez ceci pour centrer verticalement le contenu dans le bouton
+			line-height: 3em;
 		}
 
 		&:hover {

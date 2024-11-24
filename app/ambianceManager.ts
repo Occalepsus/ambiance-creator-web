@@ -28,6 +28,7 @@ function getAmbianceFromSource(src: string) {
 	return {
 		fileName: path.basename(src),
 		displayName: path.basename(src),
+		// TODO: gérer les types des ressources distantes
 		type: "none",
 		src: src,
 	};
