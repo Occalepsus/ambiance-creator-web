@@ -75,7 +75,7 @@ function uploadFileTo(file: File, dst: string) {
 	// File should not already exist in the ambiance list
 	if (ambianceList.find((ambiance) => ambiance.fileName === file.name)) {
 		console.error("Ambiance already exists:", file.name);
-		return;
+		return false;
 	}
 
 	// Write file on the server
@@ -83,9 +83,15 @@ function uploadFileTo(file: File, dst: string) {
 		const buffer = Buffer.from(bytes);
 
 		const filePath = path.join(dst, file.name);
-		writeFile(filePath, buffer).then(() => {
-			console.log(`${filePath} successfully uploaded to the server.`);
-		});
+		writeFile(filePath, buffer)
+			.then(() => {
+				console.log(`${filePath} successfully uploaded to the server.`);
+				return true;
+			})
+			.catch((err) => {
+				console.log(err);
+				return false;
+			});
 	});
 }
 
@@ -121,11 +127,13 @@ export async function uploadAmbiances(data: FormData) {
 
 		// File should be an image
 		if (file.type.startsWith("image/")) {
-			uploadFileTo(file, path.join(ambiancesDir, "images"));
-			newAmbiances.push(getLocalAmbianceFromName(file.name, "image"));
+			if (uploadFileTo(file, path.join(ambiancesDir, "images"))) {
+				newAmbiances.push(getLocalAmbianceFromName(file.name, "image"));
+			}
 		} else if (file.type.startsWith("video/")) {
-			uploadFileTo(file, path.join(ambiancesDir, "videos"));
-			newAmbiances.push(getLocalAmbianceFromName(file.name, "video"));
+			if (uploadFileTo(file, path.join(ambiancesDir, "videos"))) {
+				newAmbiances.push(getLocalAmbianceFromName(file.name, "video"));
+			}
 		} else {
 			console.error("Invalid file type:", file.name);
 			return;
