@@ -100,6 +100,14 @@ export async function uploadAmbiances(data: FormData) {
 	if (!fs.existsSync(ambiancesDir)) {
 		fs.mkdirSync(ambiancesDir, { recursive: true });
 	}
+	const imagesAmbiancesDir = path.join(ambiancesDir, "images");
+	if (!fs.existsSync(imagesAmbiancesDir)) {
+		fs.mkdirSync(imagesAmbiancesDir, { recursive: true });
+	}
+	const videosAmbiancesDir = path.join(ambiancesDir, "images");
+	if (!fs.existsSync(videosAmbiancesDir)) {
+		fs.mkdirSync(videosAmbiancesDir, { recursive: true });
+	}
 
 	// For each file, if it is valid, upload it to the server
 	// and create an Ambiance object to add it to the new ambiances list
