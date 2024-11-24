@@ -15,7 +15,9 @@ export default function PanelView({
 		<PanelGroup autoSaveId="root" direction="horizontal">
 			<Panel className={styles.panel}>{main}</Panel>
 			<ResizeHandle />
-			<Panel className={styles.panel}>{side}</Panel>
+			<Panel className={styles.panel} defaultSize={50}>
+				{side}
+			</Panel>
 		</PanelGroup>
 	);
 }

@@ -1,10 +1,7 @@
 import styles from "./page.module.scss";
 
 import ClientSocket from "./components/ClientSocket";
-import Viewport from "./components/Viewport";
 import AmbianceBrowser from "./components/AmbianceBrowser";
-import PanelView from "./components/PanelView";
-import FileUploader from "./components/FileUploader";
 import MainLayout from "./components/MainLayout";
 
 export default function App() {
