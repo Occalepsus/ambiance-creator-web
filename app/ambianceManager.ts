@@ -2,26 +2,33 @@
 
 import fs from "fs";
 import { readdir, writeFile } from "fs/promises";
+import { revalidatePath } from "next/cache";
 import path from "path";
 
 let ambianceList: Array<Ambiance> = [];
 let currentAmbiance: Ambiance | null = null;
 
 export interface Ambiance {
-	name: string;
+	fileName: string;
+	displayName: string;
+	type: string;
 	src: string;
 }
 
-function getLocalAmbianceFromName(name: string) {
+function getLocalAmbianceFromName(name: string, type: string) {
 	return {
-		name: name,
-		src: `/ambiances/${name}`,
+		fileName: name,
+		displayName: name.substring(0, name.lastIndexOf(".")),
+		type: type,
+		src: `/ambiances/${type}s/${name}`,
 	};
 }
 
 function getAmbianceFromSource(src: string) {
 	return {
-		name: path.basename(src),
+		fileName: path.basename(src),
+		displayName: path.basename(src),
+		type: "none",
 		src: src,
 	};
 }
@@ -41,7 +48,7 @@ export async function getAmbianceList() {
 async function onAmbianceListModified() {
 	// Sort list
 	ambianceList.sort((a, b) =>
-		a.name.localeCompare(b.name, undefined, {
+		a.fileName.localeCompare(b.fileName, undefined, {
 			numeric: true,
 			sensitivity: "base",
 		})
@@ -59,6 +66,26 @@ async function onAmbianceListModified() {
 
 	// Write to file
 	fs.writeFileSync(dataFilePath, data);
+
+	//revalidatePath("/");
+}
+
+function uploadFileTo(file: File, dst: string) {
+	// File should not already exist in the ambiance list
+	if (ambianceList.find((ambiance) => ambiance.fileName === file.name)) {
+		console.error("Ambiance already exists:", file.name);
+		return;
+	}
+
+	// Write file on the server
+	file.arrayBuffer().then((bytes) => {
+		const buffer = Buffer.from(bytes);
+
+		const filePath = path.join(dst, file.name);
+		writeFile(filePath, buffer).then(() => {
+			console.log(`${filePath} successfully uploaded to the server.`);
+		});
+	});
 }
 
 export async function uploadAmbiances(data: FormData) {
@@ -76,7 +103,7 @@ export async function uploadAmbiances(data: FormData) {
 	// For each file, if it is valid, upload it to the server
 	// and create an Ambiance object to add it to the new ambiances list
 	const newAmbiances: Array<Ambiance> = [];
-	fileList.forEach((file) => {
+	fileList.forEach(async (file) => {
 		// First check for sanity: file should not be null, undefined, or empty
 		if (!file || (file.name === "undefined" && file.size === 0)) {
 			console.error("Invalid file:", file);
@@ -84,29 +111,16 @@ export async function uploadAmbiances(data: FormData) {
 		}
 
 		// File should be an image
-		if (!file.name.match(/\.(jpg|jpeg|png)$/)) {
+		if (file.type.startsWith("image/")) {
+			uploadFileTo(file, path.join(ambiancesDir, "images"));
+			newAmbiances.push(getLocalAmbianceFromName(file.name, "image"));
+		} else if (file.type.startsWith("video/")) {
+			uploadFileTo(file, path.join(ambiancesDir, "videos"));
+			newAmbiances.push(getLocalAmbianceFromName(file.name, "video"));
+		} else {
 			console.error("Invalid file type:", file.name);
 			return;
 		}
-
-		// File should not already exist in the ambiance list
-		if (ambianceList.find((ambiance) => ambiance.name === file.name)) {
-			console.error("Ambiance already exists:", file.name);
-			return;
-		}
-
-		// Write file on the server
-		file.arrayBuffer().then((bytes) => {
-			const buffer = Buffer.from(bytes);
-
-			const filePath = path.join(ambiancesDir, file.name);
-			writeFile(filePath, buffer).then(() => {
-				console.log(`${filePath} successfully uploaded to the server.`);
-			});
-		});
-
-		// At last, add the new ambiance to the list
-		newAmbiances.push(getLocalAmbianceFromName(file.name));
 	});
 
 	// Add the new ambiances to the list, and return them

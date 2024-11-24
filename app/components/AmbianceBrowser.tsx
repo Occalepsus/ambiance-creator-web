@@ -37,7 +37,7 @@ export default function AmbianceBrowser({
 		}) {
 			setAmbianceList((currentList) =>
 				[...currentList, ...newAmbiances].sort((a, b) =>
-					a.name.localeCompare(b.name, undefined, {
+					a.fileName.localeCompare(b.fileName, undefined, {
 						numeric: true,
 						sensitivity: "base",
 					})

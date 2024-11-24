@@ -44,10 +44,24 @@ export default function Viewport({ className = "" }: { className?: string }) {
 			].join(" ")}
 		>
 			{currentAmbiance !== null ? (
-				<img
-					src={currentAmbiance ? currentAmbiance.src : ""}
-					className={styles.viewportImage}
-				/>
+				<>
+					{currentAmbiance.type === "image" && (
+						<img
+							src={currentAmbiance ? currentAmbiance.src : ""}
+							className={styles.viewportImage}
+						/>
+					)}
+					{currentAmbiance.type === "video" && (
+						<video
+							src={currentAmbiance ? currentAmbiance.src : ""}
+							className={styles.viewportVideo}
+							loop
+							muted
+							autoPlay
+							preload="auto"
+						/>
+					)}
+				</>
 			) : (
 				<></>
 			)}

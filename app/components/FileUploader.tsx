@@ -82,7 +82,7 @@ export default function FileUploader({
 					<input
 						id="fileUpload"
 						type="file"
-						accept="image/jpeg, image/png, image/gif"
+						accept="image/*, video/*"
 						name="file"
 						multiple
 						onChange={handleFileUpload}

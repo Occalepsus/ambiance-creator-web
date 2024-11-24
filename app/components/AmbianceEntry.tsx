@@ -49,8 +49,11 @@ export default function AmbianceEntry({
 					alt="thumbnail"
 					className={styles.thumbnail}
 				/>
+				{/* TODO: Gérer les miniatures de vidéos */}
 			</div>
-			<span className={styles.ambianceEntryName}>{ambiance.name}</span>
+			<span className={styles.ambianceEntryName}>
+				{ambiance.displayName}
+			</span>
 		</div>
 	);
 }
