@@ -86,13 +86,13 @@ function uploadFileTo(file: File, dst: string) {
 		writeFile(filePath, buffer)
 			.then(() => {
 				console.log(`${filePath} successfully uploaded to the server.`);
-				return true;
 			})
 			.catch((err) => {
 				console.log(err);
-				return false;
 			});
 	});
+
+	return true;
 }
 
 export async function uploadAmbiances(data: FormData) {
